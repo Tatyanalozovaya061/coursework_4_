@@ -11,12 +11,14 @@ class Vacancy:
         self.responsibility = responsibility
         self.currency = 'RUR'
 
-
     def __str__(self):
-        return f'Название вакансии - {self.name}\n'\
-               f'Ссылка - {self.url}\n'\
-               f'Зарплата - от {self.salary_from} до {self.salary_to}\n'\
-               f'Требования - {self.description}\n'
+        return f'Название вакансии - {self.name}\n' \
+               f'Ссылка - {self.url}\n' \
+               f'Город - {self.area}\n' \
+               f'Зарплата - от {self.salary_from} до {self.salary_to}\n' \
+               f'Требования - {self.requirement}\n' \
+               f'Описание - {self.responsibility}\n' \
+
 
     # def to_dict(self):
     #     """Функция, представляющая вакансию в виде словаря"""
