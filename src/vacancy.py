@@ -9,7 +9,7 @@ class Vacancy:
         self.salary_to = salary_to
         self.requirement = requirement
         self.responsibility = responsibility
-        self.currency = 'RUR'
+        # self.currency = 'RUR'
 
     def __str__(self):
         return f'Название вакансии - {self.name}\n' \
