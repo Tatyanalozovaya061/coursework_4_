@@ -18,7 +18,11 @@ class Saver(ABC):
         pass
 
     @abstractmethod
-    def remove_vacancy(self):
+    def get_vacancies_by_salary(self):
+        pass
+
+    @abstractmethod
+    def delete_vacancy(self):
         """Метод удаления вакансий"""
         pass
 
@@ -26,34 +30,38 @@ class Saver(ABC):
 class JsonSaver(Vacancy, Saver):
 
     def __init__(self, data):
-        super().__init__(data)
+        pass
+        # super().__init__(data)
         self.data = data
-        self.__all_vacancies = []
+        # self.__all_vacancies = []
 
     def load_json(self):
         with open(self.data, 'r', encoding='utf-8') as file:
             return json.load(file)
 
     def save_json(self):
-        with open(self.data, 'w', encoding='utf-8') as file:
-            json.dump(self.data, file, indent=4, ensure_ascii=False)
+        # with open(self.data, 'w', encoding='utf-8') as file:
+        #     json.dump(self.data, file, indent=4, ensure_ascii=False)
 
-    def add_vacancy(self, vacancy):
-        """Метод добавления вакансий"""
-        new_vacancy = {
-            'name': vacancy.name,
-            'url': vacancy.url,
-            'area': vacancy.area,
-            'salary_from': vacancy.salary_from,
-            'salary_to': vacancy.salary_to,
-            'requirement': vacancy.requirement,
-            'responsibility': vacancy.responsibility
-        }
-        data = list(self.load_json())
-        data.append(new_vacancy)
-        self.save_json(data)
+        with open('vacancies.json', "w", encoding='utf-8') as json_file:
+            json.dump(self.data, json_file, ensure_ascii=False)
 
-    def sort_vacancies_by_salary(self):
+
+    def add_vacancy(self, vacancies):
+        """Метод добавления вакансий в Json"""
+        list_vacancy = []
+        for vacancy in vacancies:
+            new_vacancy = {
+                'name': vacancy.name,
+                'url': vacancy.url,
+                'salary_from': vacancy.salary_from,
+                'requirement': vacancy.requirement,
+            }
+            list_vacancy.append(new_vacancy)
+        return list_vacancy
+
+
+    def get_vacancies_by_salary(self):
         """Метод сортировки вакансий по зарплате"""
         self.__all_vacancies.sort(reverse=True)
 
@@ -62,7 +70,7 @@ class JsonSaver(Vacancy, Saver):
         data = self.load_json()
         return data
 
-    def remove_vacancy(self, id):
+    def delete_vacancy(self, id):
         data = self.load_json()
         for item in data:
             if item['id'] == id:

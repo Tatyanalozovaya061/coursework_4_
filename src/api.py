@@ -36,34 +36,18 @@ class HH_API(API):
         if response.status_code == 200:
             return response.json()['items']
 
-    # def __init__(self, keyword):
-    #     self.url = 'https://api.hh.ru/vacancies'
-    #     self.params = {
-    #         'text': keyword,
-    #         'per_page': 10,
-    #         'area': 76,
-    #     }
-
-    # def get_vacancies(self):
-    #     response = requests.get(self.url, params=self.params)
-    #     return response.json()['items']
-
     def get_from_vacancy(self, vacancies):
         """Инициализация вакансий"""
         hh_vacancies = []
         for item in vacancies:
-            if item['name'] == 'RUR':
-                vacancy = Vacancy(
-                    item['name'],
-                    item['alternate_url'],
-                    item['area']['name'],
-                    item['salary']['from'],
-                    item['salary']['to'],
-                    item['snippet']['requirement'],
-                    item['snippet']['responsibility']
-                )
-                hh_vacancies.append(vacancy)
-            return hh_vacancies
+            vacancy = Vacancy(
+                name=item[0]['name'],
+                url=item[0]['alternate_url'],
+                salary_from=item[0]['salary']['from'],
+                requirement=item[0]['snippet']['requirement'],
+            )
+            hh_vacancies.append(vacancy)
+        return hh_vacancies
 
 
 class SJ_API(API):
@@ -90,7 +74,15 @@ class SJ_API(API):
     def get_from_vacancy(self):
         pass
 
-
-# if __name__ == '__main__':
-#     hh_api = HH_API()
-#     print(hh_api.get_from_vacancy())
+    def get_from_sj(vacancies: list):
+        """инициализация c sj"""
+        vacancies_list = []
+        for item in vacancies:
+            if item['candidat']:
+                if item['payment_to']:
+                    if item['currency'] == 'rub':
+                        vacancy = Vacancy(item['profession'], item["candidat"], item["payment_from"],
+                                          item["payment_to"], item["client"]["title"], item["town"]["title"],
+                                          item["link"])
+                        vacancies_list.append(vacancy)
+        return vacancies_list
