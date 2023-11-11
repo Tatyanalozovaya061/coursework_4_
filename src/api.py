@@ -11,11 +11,11 @@ class API(ABC):
         pass
 
     @abstractmethod
-    def get_vacancies(self):
+    def get_vacancies(self, keyword):
         pass
 
     @abstractmethod
-    def get_from_vacancy(self):
+    def get_from_vacancy(self, vacancies):
         pass
 
 
@@ -28,7 +28,7 @@ class HH_API(API):
 
     def get_vacancies(self, keyword):
         params = {
-            'keyword': keyword,
+            'text': keyword,
             'page': self.page,
             'count': self.per_page
         }
@@ -37,14 +37,29 @@ class HH_API(API):
             return response.json()['items']
 
     def get_from_vacancy(self, vacancies):
-        """Инициализация вакансий"""
+        """Инициализация вакансий HH"""
         hh_vacancies = []
         for item in vacancies:
+            name = item.get('name', 'Не найдено')
+            url = item.get('alternate_url', 'Не найдено')
+            salary_from = 0
+            try:
+                salary = item.get('salary', None)
+                if salary is not None:
+                    salary_from = salary['from']
+                    if salary_from is None:
+                        salary_from = 0
+            except KeyError:
+                pass
+            try:
+                requirement = item['snippet']['requirement']
+            except KeyError or TypeError:
+                requirement = 'Не найдено'
             vacancy = Vacancy(
-                name=item[0]['name'],
-                url=item[0]['alternate_url'],
-                salary_from=item[0]['salary']['from'],
-                requirement=item[0]['snippet']['requirement'],
+                name=name,
+                url=url,
+                salary_from=salary_from,
+                requirement=requirement,
             )
             hh_vacancies.append(vacancy)
         return hh_vacancies
@@ -71,18 +86,19 @@ class SJ_API(API):
         if response.status_code == 200:
             return response.json()['objects']
 
-    def get_from_vacancy(self):
-        pass
-
-    def get_from_sj(vacancies: list):
-        """инициализация c sj"""
-        vacancies_list = []
+    def get_from_vacancy(self, vacancies):
+        """Инициализация вакансий SJ"""
+        sj_vacancies = []
         for item in vacancies:
-            if item['candidat']:
-                if item['payment_to']:
-                    if item['currency'] == 'rub':
-                        vacancy = Vacancy(item['profession'], item["candidat"], item["payment_from"],
-                                          item["payment_to"], item["client"]["title"], item["town"]["title"],
-                                          item["link"])
-                        vacancies_list.append(vacancy)
-        return vacancies_list
+            name = item.get('profession', 'Не найдено')
+            url = item.get('link', 'Не найдено')
+            salary_from = item.get('payment_from', 0)
+            requirement = item.get('vacancyRichText', 'Не найдено')
+            vacancy = Vacancy(
+                name=name,
+                url=url,
+                salary_from=salary_from,
+                requirement=requirement,
+            )
+            sj_vacancies.append(vacancy)
+        return sj_vacancies

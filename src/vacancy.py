@@ -36,28 +36,54 @@ class Vacancy:
     #     return self.salary_from != other.salary_from
 
 
-# class Vacancies:
-#     """Класс хранения и обработки вакансий"""
-#
-#     def __init__(self):
-#         self.__all_vacancies = []
+class Vacancies:
+    """Класс хранения и обработки вакансий"""
 
-    # def add_vacancies(self, new_vacancies):
-    #     """Метод добавления вакансий"""
-    #     self._all_vacancies += new_vacancies
+    def __init__(self):
+        self.__all_vacancies = []
 
-    # def sort_vacancies_by_salary(self):
-    #     """Метод сортировки вакансий по зарплате"""
-    #     self._all_vacancies.sort(reverse=True)
+    def add_vacancies(self, new_vacancies):
+        """Метод добавления вакансий"""
+        self.__all_vacancies.extend(new_vacancies)
 
-    # @property
-    # def all_vacancies(self):
-    #     """Метод получения всех вакансий"""
-    #     return self._all_vacancies
-    #
-    # def to_list_dict(self):
-    #     """Метод перевода вакансий в список словарей"""
-    #     list_vac = []
-    #     for item in self._all_vacancies:
-    #         list_vac.append(item.to_dict())
-    #     return list_vac
+    def sort_vacancies_by_salary(self, reverse=True):
+        """Метод сортировки вакансий по зарплате"""
+        # self.__all_vacancies.sort(reverse=True)
+        proceed_vacancies = sorted(self.__all_vacancies, key=lambda x: x.salary_from, reverse=reverse)
+        self.__all_vacancies = proceed_vacancies
+
+    @property
+    def all_vacancies(self):
+        """Метод получения всех вакансий"""
+        return self.__all_vacancies
+
+    def to_list_dict(self):
+        """Метод перевода вакансий в список словарей"""
+        list_vacancy = []
+        for item in self.__all_vacancies:
+            list_vacancy.append(item.to_dict())
+        return list_vacancy
+
+    def vacancy_from_list(self, vacancy_list):
+        """Метод заполнения списка вакансий из файла"""
+        self.__all_vacancies = []
+        for item in vacancy_list:
+            name = item['name']
+            url = item['url']
+            salary_from = item['salary_from']
+            requirement = item['description']
+            vacancy = Vacancy(
+                name=name,
+                url=url,
+                salary_from=salary_from,
+                requirement=requirement,
+            )
+            self.__all_vacancies.append(vacancy)
+
+    def print_vacancy(self, number=2):
+        '''Метод выведения вакансий'''
+        count_list = len(self.__all_vacancies)
+        if number > count_list:
+            number = count_list
+        for index in range(number):
+            print(self.__all_vacancies[index])
