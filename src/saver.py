@@ -12,23 +12,11 @@ class Saver(ABC):
     @abstractmethod
     def save_file(self, data, filename):
         pass
-    #
-    # @abstractmethod
-    # def add_vacancy(self):
-    #     pass
-    #
-    # @abstractmethod
-    # def get_data_from_a_file(self):
-    #     pass
-    #
-    # @abstractmethod
-    # def get_vacancies_by_salary(self):
-    #     pass
-    #
-    # @abstractmethod
-    # def delete_vacancy(self):
-    #     """Метод удаления вакансий"""
-    #     pass
+
+    @abstractmethod
+    def delete_vacancy(self, url, data):
+        """Метод удаления вакансий"""
+        pass
 
 
 class JsonSaver(Saver):
@@ -40,3 +28,10 @@ class JsonSaver(Saver):
     def save_file(self, data, filename='vacancies.json'):
         with open(file=filename, mode="w", encoding='utf-8') as json_file:
             json.dump(data, json_file, ensure_ascii=False)
+
+    def delete_vacancy(self, url, data):
+        """Метод удаления вакансии"""
+        for item in data:
+            if item['url'] == url:
+                data.remove(item)
+        return data

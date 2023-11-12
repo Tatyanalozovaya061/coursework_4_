@@ -23,18 +23,6 @@ class Vacancy:
             'description': self.requirement
         }
 
-    # def __lt__(self, other):
-    #     return self.salary_from < other.salary_from
-    #
-    # def __le__(self, other):
-    #     return self.salary_from <= other.salary_from
-    #
-    # def __eq__(self, other):
-    #     return self.salary_from == other.salary_from
-    #
-    # def __ne__(self, other):
-    #     return self.salary_from != other.salary_from
-
 
 class Vacancies:
     """Класс хранения и обработки вакансий"""
